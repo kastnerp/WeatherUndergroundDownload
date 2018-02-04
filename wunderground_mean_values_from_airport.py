@@ -5,9 +5,9 @@ from bs4 import BeautifulSoup
 f = open('wunder-data.txt', 'w')
 
 # Iterate through year, month, and day
-for y in range(2006, 2100):
-    for m in range(1, 2):
-        for d in range(1, 3):
+for y in range(2006, 2018):
+    for m in range(1, 12):
+        for d in range(1, 31):
 
             # Check if leap year
             if y % 400 == 0:
@@ -29,7 +29,7 @@ for y in range(2006, 2100):
                 continue
 
             # Open wunderground.com url
-            url = "https://www.wunderground.com/history/airport/KBUF/" + str(y) + "/" + str(m) + "/" + str(
+            url = "https://www.wunderground.com/history/airport/KJFK/" + str(y) + "/" + str(m) + "/" + str(
                 d) + "/DailyHistory.html"
             page = urllib.request.urlopen(url)
             print(url)
