@@ -8,7 +8,10 @@ import pandas as pd
 
 # Create/open a file called wunder.txt (which will be a comma-delimited file)
 f = open('wunder-data.txt', 'w')
+
+#Settings
 station_id = "KJFK"
+
 
 f.write("timestamp" + "," + "windspeed" + '\n')
 print("timestamp" + "," + "windspeed" + '\n')
@@ -29,11 +32,11 @@ for y in range(2013, 2018):
             #print(y,leap)
 
             # Check if already gone through month
-            if (m == 2 and leap and d > 29):
+            if m == 2 and leap and d > 29:
                 continue
-            elif (m == 2 and d > 28):
+            elif m == 2 and d > 28:
                 continue
-            elif (m in [4, 6, 9, 10] and d > 30):
+            elif m in [4, 6, 9, 10] and d > 30:
                 continue
 
             # Open wunderground.com url
@@ -53,7 +56,7 @@ for y in range(2013, 2018):
             #for h in range(0,23):
             #   windSpeed[h] = soup.find
 
-            table = soup.find("table",id="obsTable")
+            table = soup.find("table", id="obsTable")
             table_rows = table.find_all('tr')
             for tr in table_rows:
                 td = tr.find_all('td')

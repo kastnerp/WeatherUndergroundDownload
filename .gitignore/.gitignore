@@ -103,3 +103,4 @@ ENV/
 
 # Run
 *.txt
+.txt
