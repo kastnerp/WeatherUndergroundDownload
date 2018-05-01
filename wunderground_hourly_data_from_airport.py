@@ -5,20 +5,26 @@ from bs4 import BeautifulSoup
 import string
 import re
 import pandas as pd
+import os
 
 # Create/open a file called wunder.txt (which will be a comma-delimited file)
-f = open('wunder-data.txt', 'w')
+f = open('wunder_hourly_data_from_airport.csv', 'w')
 
 #Settings
 station_id = "KJFK"
+year_start = 2017
+year_end = 2018
+month_start = 1
+month_end = 2
+day_start = 1
+day_end = 3
 
 
-f.write("timestamp" + "," + "windspeed" + '\n')
-print("timestamp" + "," + "windspeed" + '\n')
+f.write("timestamp" + "," + "winddir" + "," + "windspeed" + '\n')
 # Iterate through year, month, and day
-for y in range(2013, 2018):
-    for m in range(1, 12):
-        for d in range(1, 31):
+for y in range(year_start, year_end):
+    for m in range(month_start, month_end):
+        for d in range(day_start, day_end):
 
             # Check if leap year
             if y % 400 == 0:
@@ -39,58 +45,26 @@ for y in range(2013, 2018):
             elif m in [4, 6, 9, 10] and d > 30:
                 continue
 
+            # Write timestamp and temperature to file
             # Open wunderground.com url
             url = "https://www.wunderground.com/history/airport/" + str(station_id) + "/" + str(y) + "/" + str(m) + "/" + str(d) + "/DailyHistory.html"
             page = urllib.request.urlopen(url)
-            print(url)
+
 
             # Get temperature from page
             soup = BeautifulSoup(page, "html.parser")
             windSpeed = soup.find("span", text="Wind Speed").parent.find_next_sibling("td").get_text(strip=True)
             windSpeedInt = re.findall(r'\d+', windSpeed)
 
-            span = soup.find("span", text="(EST)").get_text(strip=True)
-
-            print(span)
-
-            #for h in range(0,23):
-            #   windSpeed[h] = soup.find
-
             table = soup.find("table", id="obsTable")
             table_rows = table.find_all('tr')
-            for tr in table_rows:
-                td = tr.find_all('td')
-                row = [i.text for i in td]
-                pd.DataFrame([[i.text for i in tr.findAll('td')] for tr in table_rows])
-
-
-                #print(row)
-
-
-
-
-
-            #dayTemp = str(soup.body.b.string)
-
-            # Format month for timestamp
-            if len(str(m)) < 2:
-                mStamp = '0' + str(m)
-            else:
-                mStamp = str(m)
-
-            # Format day for timestamp
-            if len(str(d)) < 2:
-                dStamp = '0' + str(d)
-            else:
-                dStamp = str(d)
-
-            # Build timestamp
-            timestamp = str(y) + mStamp + dStamp
-            # Write timestamp and temperature to file
-
-            print(timestamp,windSpeedInt)
-            f.write(timestamp + "," + windSpeedInt[0] + '\n')
-
+            windspeed = pd.DataFrame([[i.text for i in tr.findAll('td')] for tr in table_rows])#[8]
+            winddir = pd.DataFrame([[i.text for i in tr.findAll('td')] for tr in table_rows])#[7]
+            time = pd.DataFrame([[i.text for i in tr.findAll('td')] for tr in table_rows])#[0]
+            for hour in range(1, 25, 1):
+                f.write(time.iat[hour,0].strip() + ","+ winddir.iat[hour,7].strip() + ","+ windspeed.iat[hour,8].strip() + '\n')
+                #print(time.iat[i,0].strip() + "," + windspeed.iat[i,8].strip())
+                print("hour: " + str(hour) + ", day: " + str(d) + ", month: " + str(m) + ", year: " + str(y))
 
 # Done getting data! Close file.
 f.close()
