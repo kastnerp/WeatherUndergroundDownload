@@ -104,4 +104,5 @@ ENV/
 # Run
 *.txt
 .txt
+*.csv
 .csv
