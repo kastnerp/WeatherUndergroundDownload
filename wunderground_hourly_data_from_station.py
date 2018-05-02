@@ -2,12 +2,12 @@ import urllib.request, urllib.parse
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import os
+import codecs
 
 # Create/open a file called wunder.txt (which will be a comma-delimited file)
-f = open('wunder_hourly_data_from_station.csv', 'w')
+f = codecs.open('wunder_hourly_data_from_station.csv', 'w', "utf-8")
 
-
-#Settings
+# Settings
 
 station_id = "KNYITHAC52"
 year_start = 2017
@@ -17,7 +17,8 @@ month_end = 13
 day_start = 1
 day_end = 32
 
-f.write("Time,TemperatureF,DewpointF,PressureIn,WindDirection,WindDirectionDegrees,WindSpeedMPH,WindSpeedGustMPH,Humidity,HourlyPrecipIn,Conditions,Clouds,dailyrainin,SolarRadiationWatts/m^2,SoftwareType,DateUTC"+ '\n')
+f.write(
+    "Time,TemperatureF,DewpointF,PressureIn,WindDirection,WindDirectionDegrees,WindSpeedMPH,WindSpeedGustMPH,Humidity,HourlyPrecipIn,Conditions,Clouds,dailyrainin,SolarRadiationWatts/m^2,SoftwareType,DateUTC" + '\n')
 # Iterate through year, month, and day
 for y in range(year_start, year_end):
     for m in range(month_start, month_end):
@@ -31,7 +32,7 @@ for y in range(year_start, year_end):
                 leap = True
             else:
                 leap = False
-            #print(y,leap)
+            # print(y,leap)
 
             # Check if already gone through month
             if m == 2 and leap and d > 29:
@@ -42,12 +43,13 @@ for y in range(year_start, year_end):
                 continue
 
             # Open wunderground.com url
-            url = "https://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=" + str(station_id) + "&graphspan=day&month=" + str(m) + "&day=" + str(d) + "&year=" + str(y) + "&format=1"
+            url = "https://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=" + str(
+                station_id) + "&graphspan=day&month=" + str(m) + "&day=" + str(d) + "&year=" + str(y) + "&format=1"
             page = urllib.request.urlopen(url)
             print("day: " + str(d) + ", month: " + str(m) + ", year: " + str(y))
             soup = BeautifulSoup(urlopen(url), "html.parser")
 
-            #print(url)
+            # print(url)
             '''print(soup)
             print(type(soup))
 
@@ -67,7 +69,7 @@ for y in range(year_start, year_end):
             print(type(data))'''
             for tag in soup.find_all("br"):
                 data_clean = tag.next_sibling.rstrip(os.linesep)
-                #print(data_clean)
+                # print(data_clean)
                 f.write(data_clean)
 # Close file.
 f.close()

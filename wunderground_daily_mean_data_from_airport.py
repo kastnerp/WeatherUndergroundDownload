@@ -6,22 +6,21 @@ import string
 import re
 import pandas as pd
 import os
+import codecs
 
 # Create/open a file called wunder.txt (which will be a comma-delimited file)
-f = open('wunder_daily_mean_data_from_airport.csv', 'w')
+f = codecs.open('wunder_daily_mean_data_from_airport.csv', 'w', "utf-8")
 
-#Settings
+# Settings
 station_id = "KJFK"
-year_start = 2017
-year_end = 2018
+year_start = 2013
+year_end = 2015
 month_start = 1
-month_end = 2
+month_end = 13
 day_start = 1
-day_end = 3
+day_end = 2
 
-
-f.write("timestamp" + "," + "windspeed" + '\n')
-print("timestamp" + "," + "windspeed" + '\n')
+f.write("timestamp" + "," + "temperature[C]" + "," + "windspeed[m/s]" + "," + "winddirection[deg]" + '\n')
 # Iterate through year, month, and day
 for y in range(year_start, year_end):
     for m in range(month_start, month_end):
@@ -36,7 +35,7 @@ for y in range(year_start, year_end):
                 leap = True
             else:
                 leap = False
-            #print(y,leap)
+            # print(y,leap)
 
             # Check if already gone through month
             if m == 2 and leap and d > 29:
@@ -47,15 +46,55 @@ for y in range(year_start, year_end):
                 continue
 
             # Open wunderground.com url
-            url = "https://www.wunderground.com/history/airport/" + str(station_id) + "/" + str(y) + "/" + str(m) + "/" + str(d) + "/DailyHistory.html"
+            url = "https://www.wunderground.com/history/airport/" + str(station_id) + "/" + str(y) + "/" + str(
+                m) + "/" + str(d) + "/DailyHistory.html"
             page = urllib.request.urlopen(url)
 
-            # Get temperature from page
+            # Get data from page
             soup = BeautifulSoup(page, "html.parser")
             windSpeed = soup.find("span", text="Wind Speed").parent.find_next_sibling("td").get_text(strip=True)
-            windSpeedInt = re.findall(r'\d+', windSpeed)
+            windSpeedInt = int(re.findall(r'\d+', windSpeed)[0])
+            windSpeedIntMetric = round(windSpeedInt * 0.44704, 1)
+            meanTemp = soup.find("span", text="Mean Temperature").parent.find_next_sibling("td").get_text(strip=True)
+            meanTempInt = int(re.findall(r'\d+', meanTemp)[0])
+            meanTempIntMetric = round((meanTempInt - 32) * 5 / 9, 1)
+            windDirection = windSpeed[windSpeed.find("(") + 1:windSpeed.find(")")]
+            if windDirection == 'South':
+                windDirection = 180
+            elif windDirection == 'SSW':
+                windDirection = 202.5
+            elif windDirection == 'SW':
+                windDirection = 225
+            elif windDirection == 'WSW':
+                windDirection = 247.5
+            elif windDirection == 'West':
+                windDirection = 270
+            elif windDirection == 'WNW':
+                windDirection = 292.5
+            elif windDirection == 'NW':
+                windDirection = 315
+            elif windDirection == 'NNW':
+                windDirection = 337.5
+            elif windDirection == 'North':
+                windDirection = 0
+            elif windDirection == 'NNE':
+                windDirection = 22.5
+            elif windDirection == 'NE':
+                windDirection = 45
+            elif windDirection == 'ENE':
+                windDirection = 67.5
+            elif windDirection == 'E':
+                windDirection = 90
+            elif windDirection == 'ESE':
+                windDirection = 112.5
+            elif windDirection == 'SE':
+                windDirection = 135
+            elif windDirection == 'SSE':
+                windDirection = 157.5
+            else:
+                windDirection = windDirection
 
-            #dayTemp = str(soup.body.b.string)
+            # dayTemp = str(soup.body.b.string)
 
             # Format month for timestamp
             if len(str(m)) < 2:
@@ -71,11 +110,11 @@ for y in range(year_start, year_end):
 
             # Build timestamp
             timestamp = str(y) + mStamp + dStamp
-            # Write timestamp and temperature to file
+            # Write timestamp and data to file
 
             print("day: " + str(d) + ", month: " + str(m) + ", year: " + str(y))
-            f.write(timestamp + "," + windSpeedInt[0] + '\n')
-
+            f.write(timestamp + "," + str(meanTempIntMetric) + "," + str(windSpeedIntMetric) + "," + str(
+                windDirection) + '\n')
 
 # Done getting data! Close file.
 f.close()
