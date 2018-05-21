@@ -1,30 +1,16 @@
 import urllib.request, urllib.parse
-from typing import List, Any
-
 from bs4 import BeautifulSoup
-import string
 import re
-import pandas as pd
-import os
 import codecs
+import config
 
-# Create/open a file called wunder.txt (which will be a comma-delimited file)
 f = codecs.open('wunder_daily_mean_data_from_airport.csv', 'w', "utf-8")
-
-# Settings
-station_id = "KJFK"
-year_start = 2013
-year_end = 2015
-month_start = 1
-month_end = 13
-day_start = 1
-day_end = 2
 
 f.write("timestamp" + "," + "temperature[C]" + "," + "windspeed[m/s]" + "," + "winddirection[deg]" + '\n')
 # Iterate through year, month, and day
-for y in range(year_start, year_end):
-    for m in range(month_start, month_end):
-        for d in range(day_start, day_end):
+for y in range(config.year_start, config.year_end):
+    for m in range(config.month_start, config.month_end):
+        for d in range(config.day_start, config.day_end):
 
             # Check if leap year
             if y % 400 == 0:
@@ -46,7 +32,7 @@ for y in range(year_start, year_end):
                 continue
 
             # Open wunderground.com url
-            url = "https://www.wunderground.com/history/airport/" + str(station_id) + "/" + str(y) + "/" + str(
+            url = "https://www.wunderground.com/history/airport/" + str(config.station_id) + "/" + str(y) + "/" + str(
                 m) + "/" + str(d) + "/DailyHistory.html"
             page = urllib.request.urlopen(url)
 

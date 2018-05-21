@@ -3,26 +3,16 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import os
 import codecs
+import config
 
-# Create/open a file called wunder.txt (which will be a comma-delimited file)
 f = codecs.open('wunder_hourly_data_from_station.csv', 'w', "utf-8")
-
-# Settings
-
-station_id = "KNYITHAC52"
-year_start = 2017
-year_end = 2018
-month_start = 1
-month_end = 13
-day_start = 1
-day_end = 32
 
 f.write(
     "Time,TemperatureF,DewpointF,PressureIn,WindDirection,WindDirectionDegrees,WindSpeedMPH,WindSpeedGustMPH,Humidity,HourlyPrecipIn,Conditions,Clouds,dailyrainin,SolarRadiationWatts/m^2,SoftwareType,DateUTC" + '\n')
 # Iterate through year, month, and day
-for y in range(year_start, year_end):
-    for m in range(month_start, month_end):
-        for d in range(day_start, day_end):
+for y in range(config.year_start, config.year_end):
+    for m in range(config.month_start, config.month_end):
+        for d in range(config.day_start, config.day_end):
             # Check if leap year
             if y % 400 == 0:
                 leap = True
@@ -44,7 +34,7 @@ for y in range(year_start, year_end):
 
             # Open wunderground.com url
             url = "https://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=" + str(
-                station_id) + "&graphspan=day&month=" + str(m) + "&day=" + str(d) + "&year=" + str(y) + "&format=1"
+                config.station_id) + "&graphspan=day&month=" + str(m) + "&day=" + str(d) + "&year=" + str(y) + "&format=1"
             page = urllib.request.urlopen(url)
             print("day: " + str(d) + ", month: " + str(m) + ", year: " + str(y))
             soup = BeautifulSoup(urlopen(url), "html.parser")
