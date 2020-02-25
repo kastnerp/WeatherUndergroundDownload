@@ -5,7 +5,7 @@ It seems like WU changes their setup every now and then so I had to change a cou
 
 # Installation
 
-> pip3 install beautifulsoup4
+> pip install beautifulsoup4
 
 # How to run this
 
