@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import os
 import codecs
 import config
+from urllib.request import Request, urlopen
 
 f = codecs.open('wunder_hourly_data_from_station.csv', 'w', "utf-8")
 
@@ -33,33 +34,20 @@ for y in range(config.year_start, config.year_end):
                 continue
 
             # Open wunderground.com url
-            url = "https://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=" + str(
+            site = "https://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=" + str(
                 config.station_id) + "&graphspan=day&month=" + str(m) + "&day=" + str(d) + "&year=" + str(y) + "&format=1"
-            page = urllib.request.urlopen(url)
-            print("day: " + str(d) + ", month: " + str(m) + ", year: " + str(y))
-            soup = BeautifulSoup(urlopen(url), "html.parser")
+            #page = urllib.request.urlopen(url)
 
-            # print(url)
-            '''print(soup)
-            print(type(soup))
-
-             for i in soup:
-                 data
-                 clean_data = soup.replace("br", "")
-
-            soup('br', limit=2)
-             Define each page
+            hdr = {'User-Agent': 'Mozilla/5.0'}
+            req = Request(site,headers=hdr)
+            page = urlopen(req)
             soup = BeautifulSoup(page, "html.parser")
-            data = soup.find_all("br").get_text(strip=True)
 
-
-            Retrieves all br tags
-            data = soup.find("br")
-            print(data)
-            print(type(data))'''
+            print("Fetching day: " + str(d) + ", month: " + str(m) + ", year: " + str(y))
+          
             for tag in soup.find_all("br"):
                 data_clean = tag.next_sibling.rstrip(os.linesep)
-                # print(data_clean)
+                #print(data_clean)                
                 f.write(data_clean)
 # Close file.
 f.close()

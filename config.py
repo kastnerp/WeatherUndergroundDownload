@@ -1,10 +1,10 @@
 # Settings
 
-station_id = "KJFK"  			#Airport
-#station_id = "IONTARIO1013"	#Standard weather station
-year_start = 2013
-year_end = 2015
+#station_id = "KJFK"  			#Airport (currently not working)
+station_id = "IONTARIO1013"	#Standard weather station (currently working)
+year_start = 2019
+year_end = 2020
 month_start = 1
-month_end = 13
+month_end = 3
 day_start = 1
-day_end = 2
+day_end = 31

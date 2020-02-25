@@ -46,13 +46,13 @@ for y in range(config.year_start, config.year_end):
 
             # Write timestamp and temperature to file
             # Open wunderground.com url
-            url = "https://www.wunderground.com/history/airport/" + str(config.station_id) + "/" + str(y) + "/" + str(m) + "/" + str(d) + "/DailyHistory.html"
+            url = "https://www.wunderground.com/history/daily/" + str(config.station_id) + "/date/" + str(y) + "-" + str(m) + "-" + str(d)
             page = urllib.request.urlopen(url)
             #print(url)
 
             # Get data from page
             soup = BeautifulSoup(page, "html.parser")
-            table = soup.find("table", id="obsTable")
+            table = soup.find("table", id="history-observation-table")
             table_rows = table.find_all('tr')
             data = pd.DataFrame([[i.text for i in tr.findAll('td')] for tr in table_rows])
 
