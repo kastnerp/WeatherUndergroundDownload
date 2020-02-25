@@ -1,4 +1,4 @@
-# weatherUndergroundParsing
+# WeatherUndergroundDownload
 
 I tried to scrape weather data from Weather Underground and found two deprecated scripts online.
 It seems like WU changes their setup every now and then so I had to change a couple of things to make them work again.
