@@ -1,6 +1,6 @@
 # WeatherUndergroundDownload
 
-I tried to scrape weather data from Weather Underground and found two deprecated scripts online.
+I tried to scrape weather data from Weather Underground and found two deprecated scripts online which have been fixed here.
 
 # Installation
 
