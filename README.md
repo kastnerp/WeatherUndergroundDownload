@@ -4,10 +4,7 @@ I tried to scrape weather data from Weather Underground and found two deprecated
 
 # Installation
 
-> pip install beautifulsoup4
-> pip install numpy
-> pip install pandas
-> pip install selenium
+> pip install beautifulsoup4 numpy pandas selenium 
 
 > Place your chromedriver in the folder containing the script. Download it from [here](https://chromedriver.chromium.org).
 
