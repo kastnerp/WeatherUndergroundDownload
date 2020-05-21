@@ -106,3 +106,5 @@ ENV/
 .txt
 *.csv
 .csv
+chromedriver.exe
+*.ipynb
